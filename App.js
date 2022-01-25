@@ -1,18 +1,32 @@
-import React from 'react';
-import {
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-
-
+import React, {useEffect, useState} from 'react';
+import {FlatList, StatusBar, StyleSheet, Text, View} from 'react-native';
+import axios from 'axios';
 
 const App = () => {
 
+  const [students, setStudents] = useState([]);
+
+  useEffect(() => {
+    async function getAllStudent(){
+      try {
+        const students = await axios.get('http://10.0.2.2:8000/api/students')
+        setStudents(students.data)
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getAllStudent();
+  }, [])
+
   return (
     <View style={styles.Container}>
-      <Text>osman</Text>
+      <FlatList 
+      data={students} 
+      renderItem={({item}) => 
+      <Text style={{fontSize:26, padding:20}}>
+        Name: {item.name}
+       {"\n"}Email: {item.email}
+       </Text>} />
       <StatusBar style="auto" />
     </View>
   );
@@ -20,8 +34,8 @@ const App = () => {
 
 const styles = StyleSheet.create({
   Container: {
-    marginTop: 300,
-    paddingHorizontal: 155,
+    marginTop: 200,
+    paddingHorizontal: 15,
   }
 });
 
